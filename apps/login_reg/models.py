@@ -68,17 +68,15 @@ class User(models.Model):
 class TripManager(models.Manager):
     def validate_trip(self, post_data):
         errors = []
-        startdate = datetime.strptime(post_data['start_date'], "%Y-%m-%d")
-        enddate = datetime.strptime(post_data['end_date'], "%Y-%m-%d")
         if len(post_data['start_date']) < 1 and len(post_data['end_date']) < 1:
-            try:
                 errors.append("dates must not be blank")
-            except ValueError:
-                errors.append("dates must not be blank")
-        if startdate < datetime.today():
-            errors.append("Start date must be future dated")
-        if enddate < startdate:
-            errors.append("End date must be after start date")
+        else:
+            startdate = datetime.strptime(post_data['start_date'], "%Y-%m-%d")
+            enddate = datetime.strptime(post_data['end_date'], "%Y-%m-%d")
+            if startdate < datetime.today():
+                errors.append("Start date must be future dated")
+            if enddate < startdate:
+                errors.append("End date must be after start date")
         if len(post_data['destination']) < 1 and len(post_data['plan']) < 1:
             errors.append("Fields must not be empty")
         return errors
